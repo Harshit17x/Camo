@@ -1518,26 +1518,21 @@ export default function RiderHome() {
             </motion.div>
             <div className="flex items-center gap-[10px]">
               {rideTypes.map((type, index) => (
-                <motion.button
+                <motion.div
                   key={type.id}
                   initial={{ opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.4 + index * 0.07, ease: [0.25, 0.46, 0.45, 0.94] }}
-                  whileTap={{ scale: 0.95, transition: { duration: 0.1 } }}
-                  onClick={() => {
-                    setSelectedRide(type);
-                    navigate('/map');
-                  }}
-                  className="relative z-10 flex-1 flex flex-col items-center justify-between py-[22px] h-[120px] bg-[#161616] rounded-2xl transition-all duration-300 cursor-pointer group active:scale-[0.98] pointer-events-auto"
+                  className="relative z-10 flex-1 flex flex-col items-center justify-between py-[22px] h-[120px] bg-[#161616] rounded-2xl pointer-events-auto"
                 >
                   <div className="relative z-10 text-white mt-1">
                     {getRideIcon(type.iconId, 32)}
                   </div>
 
-                  <span className="relative z-10 text-[9.5px] font-black uppercase tracking-[0.1em] text-zinc-500 group-hover:text-zinc-400 transition-colors duration-300">
+                  <span className="relative z-10 text-[9.5px] font-black uppercase tracking-[0.1em] text-zinc-500">
                     {type.name || type.id}
                   </span>
-                </motion.button>
+                </motion.div>
               ))}
             </div>
           </div>
