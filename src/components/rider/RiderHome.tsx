@@ -1554,7 +1554,7 @@ export default function RiderHome() {
 
       {/* Main UI Overlay */}
       <div className="absolute inset-x-0 bottom-0 z-20 pointer-events-none">
-        <div className="max-w-xl mx-auto p-4 sm:p-6 pb-safe pointer-events-auto">
+        <div className="max-w-xl mx-auto p-4 sm:p-6 pb-safe">
 
           <AnimatePresence mode="wait">
             {step === 'home' && showBooking && (
@@ -1574,7 +1574,7 @@ export default function RiderHome() {
                     setIsPanelCollapsed(false);
                   }
                 }}
-                className="relative p-6 pt-10 pb-12 space-y-6 sm:-mx-6 -mb-4 sm:-mb-6 overflow-hidden rounded-t-[32px] isolate"
+                className="relative p-6 pt-10 pb-12 space-y-6 sm:-mx-6 -mb-4 sm:-mb-6 overflow-hidden rounded-t-[32px] isolate pointer-events-auto"
                 style={{ background: '#111111' }}
               >
 
