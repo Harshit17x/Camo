@@ -92,6 +92,16 @@ export default function SupportTickets() {
     }
   };
 
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'critical': return 'text-red-500 bg-red-500/10 px-1.5 py-0.5 rounded';
+      case 'high': return 'text-orange-500 bg-orange-500/10 px-1.5 py-0.5 rounded';
+      case 'medium': return 'text-amber-500 bg-amber-500/10 px-1.5 py-0.5 rounded';
+      case 'low': return 'text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded';
+      default: return 'text-zinc-500';
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'open': return 'text-blue-500 bg-blue-500/10 border-blue-500/20';
@@ -176,8 +186,14 @@ export default function SupportTickets() {
                     </div>
                     <div>
                       <h3 className="text-white text-sm font-bold tracking-tight">{ticket.subject}</h3>
-                      <div className="text-zinc-600 text-[10px] font-bold uppercase tracking-wider mt-0.5">
-                        {ticket.createdAt?.toDate ? new Date(ticket.createdAt.toDate()).toLocaleDateString() : 'Just now'} • {ticket.priority}
+                      <div className="flex items-center gap-1.5 mt-1">
+                        <span className="text-zinc-500 text-[9px] font-bold uppercase tracking-wider">
+                          {ticket.createdAt?.toDate ? new Date(ticket.createdAt.toDate()).toLocaleDateString() : 'Just now'}
+                        </span>
+                        <span className="text-zinc-700 text-[9px]">•</span>
+                        <span className={`text-[8.5px] font-black uppercase tracking-[0.1em] ${getPriorityColor(ticket.priority)}`}>
+                          {ticket.priority}
+                        </span>
                       </div>
                     </div>
                   </div>
