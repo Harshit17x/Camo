@@ -1561,15 +1561,30 @@ export default function RiderHome() {
               <motion.div
                 key="home"
                 initial={{ y: "100%", opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
+                animate={{ y: isPanelCollapsed ? "calc(100% - 130px)" : 0, opacity: 1 }}
                 exit={{ y: "100%", opacity: 0 }}
                 transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-                className="relative p-6 pt-8 pb-12 space-y-6 sm:-mx-6 -mb-4 sm:-mb-6 overflow-hidden rounded-t-[32px] isolate"
+                drag="y"
+                dragConstraints={{ top: 0, bottom: 0 }}
+                dragElastic={{ top: 0, bottom: 0.8 }}
+                onDragEnd={(e, { offset, velocity }) => {
+                  if (offset.y > 40 || velocity.y > 400) {
+                    setIsPanelCollapsed(true);
+                  } else if (offset.y < -40 || velocity.y < -400) {
+                    setIsPanelCollapsed(false);
+                  }
+                }}
+                className="relative p-6 pt-10 pb-12 space-y-6 sm:-mx-6 -mb-4 sm:-mb-6 overflow-hidden rounded-t-[32px] isolate"
                 style={{ background: '#111111' }}
               >
 
                 {/* Drag handle */}
-                <div className="absolute top-3 left-1/2 -translate-x-1/2 w-10 h-1.5 bg-white/20 rounded-full" />
+                <div 
+                  className="absolute top-0 left-0 w-full h-12 flex justify-center items-center cursor-grab active:cursor-grabbing z-50"
+                  onClick={() => setIsPanelCollapsed(!isPanelCollapsed)}
+                >
+                  <div className="w-12 h-[5px] bg-zinc-600 rounded-full" />
+                </div>
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <p className="text-[10px] text-[#22c55e] font-black uppercase tracking-[0.2em]">{t.welcome_back}</p>
