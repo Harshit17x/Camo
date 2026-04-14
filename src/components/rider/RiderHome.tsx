@@ -1678,7 +1678,7 @@ export default function RiderHome() {
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: '100%', opacity: 0 }}
                 transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-                className="fixed bottom-0 left-0 right-0 z-[60] flex flex-col h-auto max-h-[92vh] w-[100vw]"
+                className="fixed bottom-0 left-0 right-0 z-[60] flex flex-col h-auto max-h-[92vh] w-[100vw] pointer-events-auto"
                 style={{
                   borderRadius: '24px 24px 0 0',
                   boxShadow: '0 -4px 30px rgba(0, 0, 0, 0.4)',
