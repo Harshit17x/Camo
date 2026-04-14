@@ -370,10 +370,10 @@ export function Profile() {
         animate={{ opacity: 1 }} 
         transition={{ duration: 0.5, delay: 0.3 }}
       >
-        <div className="px-5 mt-6 mb-8">
-          <button onClick={handleSignOut} className="w-full flex items-center justify-between group p-1 transition-all">
-            <span className="text-zinc-700 font-bold text-[10px] uppercase tracking-[0.2em] group-hover:text-red-400 transition-colors">Sign Out of Account</span>
-            <LogOut size={14} className="text-zinc-800 group-hover:text-red-400 transition-colors" />
+        <div className="px-5 mt-auto pt-8 mb-24">
+          <button onClick={handleSignOut} className="w-full flex items-center justify-center gap-3 p-4 bg-red-500/10 hover:bg-red-500/20 active:bg-red-500/30 border border-red-500/20 rounded-2xl transition-all group">
+            <LogOut size={16} className="text-red-500" />
+            <span className="text-red-500 font-bold text-xs uppercase tracking-widest">Sign Out of Account</span>
           </button>
         </div>
         <div className="text-zinc-800 text-[9px] font-bold uppercase tracking-[0.2em] text-center mb-8 opacity-40">
