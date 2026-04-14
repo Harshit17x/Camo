@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, MapPin, Navigation, Clock, CreditCard, ChevronRight, User, Settings, LogOut, Car, Bell, ArrowUpDown, HelpCircle, ShieldAlert, Users, Phone, Home, Star, History, Truck, X } from 'lucide-react';
+import { Search, MapPin, Navigation, Clock, CreditCard, ChevronRight, ChevronLeft, User, Settings, LogOut, Car, Bell, ArrowUpDown, HelpCircle, ShieldAlert, Users, Phone, Home, Star, History, Truck, X } from 'lucide-react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'motion/react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Map from '../shared/Map';
@@ -1697,6 +1697,20 @@ export default function RiderHome() {
                 <div className="relative z-10 w-full max-w-[420px] mx-auto flex-1 flex flex-col pt-[12px] px-[16px] overflow-y-auto custom-scrollbar">
                   {/* Inner highlight */}
                   <div className="absolute inset-0 rounded-t-[24px] pointer-events-none z-0" style={{ background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, transparent 30%)' }} />
+
+                  {/* Header / Back Button */}
+                  <div className="flex items-center gap-3 mb-4 z-10 relative">
+                    <button
+                      onClick={() => {
+                        setStep('home');
+                        setShowBooking(true);
+                      }}
+                      className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-300 hover:text-white hover:bg-white/10 transition-colors"
+                    >
+                      <ChevronLeft size={20} />
+                    </button>
+                    <span className="font-bold text-white text-base">Select your ride</span>
+                  </div>
 
                   {/* Location Summary */}
                   <div className="mb-4 bg-white/5 rounded-2xl p-4 border border-white/5 space-y-3 shrink-0 z-10 relative">
