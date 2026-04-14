@@ -1658,7 +1658,10 @@ export default function RiderHome() {
                 </div>
 
                 <button
-                  onClick={() => setStep('selecting')}
+                  onClick={() => {
+                    setStep('selecting');
+                    setShowBooking(false);
+                  }}
                   className="w-full bg-[#22c55e] text-black py-4 rounded-xl font-bold text-sm hover:scale-[1.02] hover:bg-[#16a34a] active:scale-[0.98] transition-all relative overflow-hidden group mt-2 flex items-center justify-center gap-2"
                 >
                   <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
