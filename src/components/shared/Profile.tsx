@@ -94,6 +94,9 @@ export function Profile() {
   const [ridesCount, setRidesCount] = useState(0);
   const [distance, setDistance] = useState(0);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const [isLightMode, setIsLightMode] = useState(() => {
+    return localStorage.getItem('theme') === 'light';
+  });
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
 
@@ -115,6 +118,16 @@ export function Profile() {
       document.head.removeChild(link);
     };
   }, []);
+
+  useEffect(() => {
+    if (isLightMode) {
+      document.documentElement.classList.add('theme-light');
+      localStorage.setItem('theme', 'light');
+    } else {
+      document.documentElement.classList.remove('theme-light');
+      localStorage.setItem('theme', 'dark');
+    }
+  }, [isLightMode]);
 
   useEffect(() => {
     const duration = 1200;
@@ -314,7 +327,8 @@ export function Profile() {
             {[
               { id: 'profile', icon: User, label: 'Account Profile', onClick: () => alert('Account profile editing will be available soon.') },
               { id: 'payment', icon: CreditCard, label: 'Payment Methods', subLabel: 'Personal • UPI', onClick: () => alert('Payment method configuration will be available soon.') },
-              { id: 'notifications', icon: Bell, label: 'App Notifications', isToggle: true, onClick: () => setNotificationsEnabled(!notificationsEnabled) },
+              { id: 'theme', icon: Globe, label: 'Light Mode', isToggle: true, value: isLightMode, onClick: () => setIsLightMode(!isLightMode) },
+              { id: 'notifications', icon: Bell, label: 'App Notifications', isToggle: true, value: notificationsEnabled, onClick: () => setNotificationsEnabled(!notificationsEnabled) },
               { id: 'help', icon: HelpCircle, label: 'Support & Help', onClick: () => navigate('/support') },
             ].map((item, i, arr) => (
               <motion.button 
@@ -333,10 +347,10 @@ export function Profile() {
                   {item.subLabel && <div className="text-zinc-700 text-[10px] font-bold uppercase tracking-wider mt-0.5">{item.subLabel}</div>}
                 </div>
                 {item.isToggle ? (
-                  <div className={`w-10 h-5 rounded-full relative flex items-center px-1 transition-colors ${notificationsEnabled ? 'bg-emerald-500' : 'bg-zinc-800'}`}>
+                  <div className={`w-10 h-5 rounded-full relative flex items-center px-1 transition-colors ${item.value ? 'bg-emerald-500' : 'bg-zinc-800'}`}>
                     <motion.div 
                       className="w-3 h-3 rounded-full bg-white shadow-sm"
-                      animate={{ x: notificationsEnabled ? 20 : 0 }}
+                      animate={{ x: item.value ? 20 : 0 }}
                       initial={false}
                       transition={{ type: "spring", stiffness: 500, damping: 30 }}
                     />

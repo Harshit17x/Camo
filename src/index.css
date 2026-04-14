@@ -145,6 +145,19 @@ button, a, [role="button"] {
   }
 }
 
+/* ── GLOBAL LIGHT MODE ENGINE ── */
+html.theme-light {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* Re-invert images, media, and maps to prevent them from looking negative */
+html.theme-light img:not(.logo),
+html.theme-light video,
+html.theme-light .leaflet-container,
+html.theme-light .keep-dark {
+  filter: invert(1) hue-rotate(180deg);
+}
+
 @layer components {
   .glass-panel {
     /* Reduced blur: 24px -> 12px. Visually identical on dark bg, 50% cheaper. */
