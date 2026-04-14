@@ -674,6 +674,7 @@ export default function RiderHome() {
   const [destinationCoords, setDestinationCoords] = useState<{ lat: number, lng: number }>({ lat: LOCATIONS.DAHEGAM.lat, lng: LOCATIONS.DAHEGAM.lng });
   const [selectedRide, setSelectedRide] = useState(RIDE_TYPES[0]);
   const [showBooking, setShowBooking] = useState(false);
+  const [isPanelCollapsed, setIsPanelCollapsed] = useState(false);
   const [currentRideId, setCurrentRideId] = useState<string | null>(null);
   const [activeRide, setActiveRide] = useState<any>(null);
   const [driverLocation, setDriverLocation] = useState<{ lat: number, lng: number } | null>(null);
