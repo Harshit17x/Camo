@@ -93,6 +93,7 @@ export function Profile() {
   
   const [ridesCount, setRidesCount] = useState(0);
   const [distance, setDistance] = useState(0);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
 
@@ -311,14 +312,15 @@ export function Profile() {
         <div className="px-5">
           <div className="bg-gradient-to-br from-[#1c1c1e] to-[#121213] rounded-2xl border border-white/[0.05] shadow-[0_4px_24px_rgba(0,0,0,0.5)] overflow-hidden">
             {[
-              { id: 'profile', icon: User, label: 'Account Profile' },
-              { id: 'payment', icon: CreditCard, label: 'Payment Methods', subLabel: 'Personal • UPI' },
-              { id: 'notifications', icon: Bell, label: 'App Notifications', isToggle: true },
-              { id: 'help', icon: HelpCircle, label: 'Support & Help' },
+              { id: 'profile', icon: User, label: 'Account Profile', onClick: () => alert('Account profile editing will be available soon.') },
+              { id: 'payment', icon: CreditCard, label: 'Payment Methods', subLabel: 'Personal • UPI', onClick: () => alert('Payment method configuration will be available soon.') },
+              { id: 'notifications', icon: Bell, label: 'App Notifications', isToggle: true, onClick: () => setNotificationsEnabled(!notificationsEnabled) },
+              { id: 'help', icon: HelpCircle, label: 'Support & Help', onClick: () => navigate('/support') },
             ].map((item, i, arr) => (
               <motion.button 
                 key={item.id}
-                whileTap={{ scale: 0.98 }}
+                onClick={item.onClick}
+                whileTap={{ scale: item.isToggle ? 1 : 0.98 }}
                 className={`group w-full flex items-center gap-4 px-5 py-4 text-left transition-colors duration-200 ${
                   i < arr.length - 1 ? 'border-b border-white/[0.05]' : ''
                 }`}
@@ -331,10 +333,12 @@ export function Profile() {
                   {item.subLabel && <div className="text-zinc-700 text-[10px] font-bold uppercase tracking-wider mt-0.5">{item.subLabel}</div>}
                 </div>
                 {item.isToggle ? (
-                  <div className="w-10 h-5 rounded-full bg-emerald-500 relative flex items-center px-1">
+                  <div className={`w-10 h-5 rounded-full relative flex items-center px-1 transition-colors ${notificationsEnabled ? 'bg-emerald-500' : 'bg-zinc-800'}`}>
                     <motion.div 
                       className="w-3 h-3 rounded-full bg-white shadow-sm"
-                      initial={{ x: 20 }}
+                      animate={{ x: notificationsEnabled ? 20 : 0 }}
+                      initial={false}
+                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
                     />
                   </div>
                 ) : (
