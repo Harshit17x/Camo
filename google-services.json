@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1008017557525",
+    "project_id": "gen-lang-client-0506345259",
+    "storage_bucket": "gen-lang-client-0506345259.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1008017557525:android:daf8cc171fe495a5f9a61c",
+        "android_client_info": {
+          "package_name": "com.campusmobility.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1008017557525-9c3gd1t1ln6qrc0pqaqooh4n7dipujin.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.campusmobility.app",
+            "certificate_hash": "2eb2fd8913be67e3a54f5d5e2ceddc3c9970ca8e"
+          }
+        },
+        {
+          "client_id": "1008017557525-rd1vv835ufaem6tkkvobkv07mskh5osq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.campusmobility.app",
+            "certificate_hash": "8c14bae442ce08f4d128e25ef09f71db97fc370e"
+          }
+        },
+        {
+          "client_id": "1008017557525-gtnop050bkfabb4hmo580shlh8l7q231.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHkowL-YFOBvSnOlqM7TIj0XQzFo7mzj8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1008017557525-gtnop050bkfabb4hmo580shlh8l7q231.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

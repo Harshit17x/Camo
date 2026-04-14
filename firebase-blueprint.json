@@ -1,0 +1,240 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["rider", "driver", "admin"] },
+        "adminRole": { "type": "string", "enum": ["super_admin", "operations", "finance", "support"] },
+        "phoneNumber": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "walletBalance": { "type": "number" },
+        "fcmToken": { "type": "string" },
+        "isOnline": { "type": "boolean" },
+        "isSuspended": { "type": "boolean" },
+        "lastActive": { "type": "string", "format": "date-time" },
+        "currentLocation": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" },
+            "updatedAt": { "type": "string", "format": "date-time" }
+          }
+        }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Driver": {
+      "title": "Driver",
+      "description": "Driver profile and vehicle information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "licenseNo": { "type": "string" },
+        "profilePhoto": { "type": "string" },
+        "licensePhoto": { "type": "string" },
+        "vehicleType": { "type": "string" },
+        "vehicleNo": { "type": "string" },
+        "aadharNumber": { "type": "string" },
+        "aadharPhoto": { "type": "string" },
+        "rcBookNumber": { "type": "string" },
+        "rcBookPhoto": { "type": "string" },
+        "upiNumber": { "type": "string" },
+        "status": { "type": "string", "enum": ["online", "offline", "busy"] },
+        "rating": { "type": "number" },
+        "totalRides": { "type": "integer" },
+        "earnings": { "type": "number" },
+        "currentLocation": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" }
+          }
+        },
+        "documents": {
+          "type": "object",
+          "properties": {
+            "verified": { "type": "boolean" }
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "licenseNo", "vehicleNo", "aadharNumber"]
+    },
+    "VehicleCategory": {
+      "title": "VehicleCategory",
+      "description": "Ride categories and pricing",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "icon": { "type": "string" },
+        "baseFare": { "type": "number" },
+        "perKmRate": { "type": "number" },
+        "capacity": { "type": "integer" },
+        "isActive": { "type": "boolean" }
+      }
+    },
+    "SupportTicket": {
+      "title": "SupportTicket",
+      "description": "User complaints and reviews",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "rideId": { "type": "string" },
+        "type": { "type": "string", "enum": ["complaint", "review", "sos"] },
+        "subject": { "type": "string" },
+        "description": { "type": "string" },
+        "status": { "type": "string", "enum": ["open", "in_progress", "resolved", "closed"] },
+        "priority": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Ride": {
+      "title": "Ride",
+      "description": "Ride request and trip details",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "riderId": { "type": "string" },
+        "riderName": { "type": "string" },
+        "driverId": { "type": "string" },
+        "driverName": { "type": "string" },
+        "status": { "type": "string", "enum": ["searching", "accepted", "arrived", "started", "completed", "cancelled", "scheduled"] },
+        "isScheduled": { "type": "boolean" },
+        "scheduledTime": { "type": "string", "format": "date-time" },
+        "candidateDrivers": { "type": "array", "items": { "type": "string" } },
+        "pickup": {
+          "type": "object",
+          "properties": {
+            "address": { "type": "string" },
+            "lat": { "type": "number" },
+            "lng": { "type": "number" }
+          }
+        },
+        "dropoff": {
+          "type": "object",
+          "properties": {
+            "address": { "type": "string" },
+            "lat": { "type": "number" },
+            "lng": { "type": "number" }
+          }
+        },
+        "fare": { "type": "number" },
+        "rideType": { "type": "string" },
+        "distance": { "type": "string" },
+        "duration": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "acceptedAt": { "type": "string", "format": "date-time" },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "completedAt": { "type": "string", "format": "date-time" },
+        "paymentStatus": { "type": "string", "enum": ["pending", "paid"] },
+        "paymentMethod": { "type": "string", "enum": ["card", "cash", "wallet"] },
+        "sosTriggered": { "type": "boolean" }
+      },
+      "required": ["riderId", "status", "pickup", "dropoff", "fare", "rideType"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Security audit logs for system actions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "action": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "userId": { "type": "string" },
+        "ipAddress": { "type": "string" },
+        "details": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["action", "userEmail", "timestamp"]
+    },
+    "SystemConfig": {
+      "title": "SystemConfig",
+      "description": "Global system settings and admin access control",
+      "type": "object",
+      "properties": {
+        "maintenanceMode": { "type": "boolean" },
+        "baseFare": { "type": "number" },
+        "adminEmails": { "type": "array", "items": { "type": "string" } },
+        "supportedLanguages": { "type": "array", "items": { "type": "string" } },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "In-app notifications for users",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "type": { "type": "string", "enum": ["ride_join_request", "ride_accepted", "ride_rejected", "system"] },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "data": { "type": "object" },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "type", "title", "message", "createdAt"]
+    },
+    "RideFeedback": {
+      "title": "RideFeedback",
+      "description": "Rider ratings and comments for completed trips",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "rideId": { "type": "string" },
+        "riderId": { "type": "string" },
+        "driverId": { "type": "string" },
+        "rating": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "comment": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["rideId", "riderId", "rating", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/drivers/{driverId}": {
+      "schema": "Driver",
+      "description": "Driver status and details"
+    },
+    "/rides/{rideId}": {
+      "schema": "Ride",
+      "description": "Ride transactions"
+    },
+    "/system_config/{configId}": {
+      "schema": "SystemConfig",
+      "description": "Global system settings"
+    },
+    "/vehicle_categories/{categoryId}": {
+      "schema": "VehicleCategory",
+      "description": "Available ride types"
+    },
+    "/support_tickets/{ticketId}": {
+      "schema": "SupportTicket",
+      "description": "Complaints and SOS alerts"
+    },
+    "/audit_logs/{logId}": {
+      "schema": "AuditLog",
+      "description": "Security audit logs"
+    },
+    "/notifications/{notificationId}": {
+      "schema": "Notification",
+      "description": "In-app notifications for users"
+    },
+    "/rideFeedbacks/{feedbackId}": {
+      "schema": "RideFeedback",
+      "description": "Rider ratings and comments"
+    }
+  }
+}

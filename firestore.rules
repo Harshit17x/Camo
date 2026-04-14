@@ -1,0 +1,195 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+        (
+          (request.auth.token.email == "25bcscs017@student.rru.ac.in" && request.auth.token.email_verified == true) ||
+          (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+           get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin")
+        );
+    }
+
+    function isValidRide(data) {
+      return data.riderId is string &&
+             (!("riderName" in data) || data.riderName is string) &&
+             (!("rideOTP" in data) || data.rideOTP is string) &&
+             data.status in ["searching", "accepted", "arrived", "in_progress", "started", "completed", "cancelled", "scheduled", "scheduled_accepted"] &&
+             data.pickup is map && data.pickup.address is string && data.pickup.lat is number && data.pickup.lng is number &&
+             data.dropoff is map && data.dropoff.address is string && data.dropoff.lat is number && data.dropoff.lng is number &&
+             data.fare is number &&
+             data.rideType is string &&
+             (!("driverId" in data) || data.driverId == null || data.driverId is string) &&
+             (!("driverName" in data) || data.driverName == null || data.driverName is string) &&
+             (!("driverPhoto" in data) || data.driverPhoto == null || data.driverPhoto is string) &&
+             (!("vehicleNo" in data) || data.vehicleNo == null || data.vehicleNo is string) &&
+             (!("vehicleType" in data) || data.vehicleType == null || data.vehicleType is string) &&
+             (!("isScheduled" in data) || data.isScheduled is bool) &&
+             (!("scheduledTime" in data) || data.scheduledTime == null || data.scheduledTime is string || data.scheduledTime is timestamp) &&
+             (!("scheduledAt" in data) || data.scheduledAt == null || data.scheduledAt is string) &&
+             (!("distance" in data) || data.distance is string) &&
+             (!("duration" in data) || data.duration is string) &&
+             (!("isShared" in data) || data.isShared is bool) &&
+             (!("availableSeats" in data) || data.availableSeats is number) &&
+             (!("joinedRiders" in data) || data.joinedRiders == null || data.joinedRiders is list) &&
+             (!("passengers" in data) || data.passengers == null || data.passengers is list) &&
+             (!("acceptedAt" in data) || data.acceptedAt == null || data.acceptedAt is timestamp) &&
+             (!("arrivedAt" in data) || data.arrivedAt == null || data.arrivedAt is timestamp) &&
+             (!("startedAt" in data) || data.startedAt == null || data.startedAt is timestamp) &&
+             (!("completedAt" in data) || data.completedAt == null || data.completedAt is timestamp) &&
+             (!("cancelledAt" in data) || data.cancelledAt == null || data.cancelledAt is timestamp) &&
+             (!("cancelledBy" in data) || data.cancelledBy == null || data.cancelledBy is string) &&
+             (!("candidateDrivers" in data) || data.candidateDrivers == null || data.candidateDrivers is list) &&
+             (!("createdAt" in data) || data.createdAt is timestamp) &&
+             (!("paymentStatus" in data) || data.paymentStatus in ["pending", "paid"]) &&
+             (!("paymentMethod" in data) || data.paymentMethod in ["card", "cash", "wallet", "online"]) &&
+             (!("updatedAt" in data) || data.updatedAt is timestamp);
+    }
+
+    // User Rules
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (
+        isOwner(userId) || 
+        resource.data.role == "driver" ||
+        isAdmin()
+      );
+      allow create: if isOwner(userId) && 
+                    request.resource.data.uid == userId &&
+                    (
+                      request.resource.data.role in ["rider", "driver"] || 
+                      (request.resource.data.role == "admin" && request.auth.token.email == "25bcscs017@student.rru.ac.in")
+                    );
+      allow update: if (isOwner(userId) || isAdmin()) && (
+        !("role" in request.resource.data) || 
+        request.resource.data.role == resource.data.role || 
+        (request.resource.data.role in ["rider", "driver"] && resource.data.role in ["rider", "driver"]) ||
+        isAdmin()
+      );
+    }
+
+    // Driver Rules
+    match /drivers/{driverId} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(driverId) || isAdmin();
+    }
+
+    // Ride Rules
+    match /rides/{rideId} {
+      allow read: if isAuthenticated() && (
+        resource.data.riderId == request.auth.uid || 
+        resource.data.driverId == request.auth.uid || 
+        ("passengers" in resource.data && request.auth.uid in resource.data.passengers) ||
+        ("joinedRiders" in resource.data && request.auth.uid in resource.data.joinedRiders) ||
+        resource.data.status in ["searching", "scheduled"] ||
+        isAdmin()
+      );
+      
+      allow create: if isAuthenticated() && 
+                    request.resource.data.riderId == request.auth.uid &&
+                    request.resource.data.status in ["searching", "scheduled"] &&
+                    isValidRide(request.resource.data);
+
+      allow update: if isAuthenticated() && (
+        isAdmin() ||
+        (resource.data.riderId == request.auth.uid && request.resource.data.status == "cancelled") ||
+        (resource.data.status == "searching" && request.resource.data.status == "accepted" && request.resource.data.driverId == request.auth.uid) ||
+        (resource.data.status == "scheduled" && request.resource.data.status == "scheduled_accepted" && request.resource.data.driverId == request.auth.uid) ||
+        (resource.data.driverId == request.auth.uid && request.resource.data.driverId == resource.data.driverId) ||
+        (resource.data.isShared == true && 
+         (request.auth.uid == resource.data.riderId || request.auth.uid in request.resource.data.joinedRiders || request.auth.uid in resource.data.joinedRiders) &&
+         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['joinedRiders', 'availableSeats', 'updatedAt']))
+      ) && isValidRide(request.resource.data);
+
+      allow delete: if isAdmin();
+    }
+
+    // Notification Rules
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated(); // Allow users to send notifications to others (e.g. join request)
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid && 
+                    request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read', 'data', 'updatedAt', 'status']);
+      allow delete: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    // System Config Rules
+    match /system/config {
+      allow read: if true; // Publicly readable for maintenance check
+      allow write: if isAdmin();
+    }
+    
+    match /system/{configId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // Vehicle Categories
+    match /vehicle_categories/{categoryId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // Support Tickets
+    match /support_tickets/{ticketId} {
+      allow read: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid || isAdmin()
+      );
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Audit Logs
+    match /audit_logs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAuthenticated();
+      allow update: if false; // Immutable logs
+      allow delete: if isAdmin(); // Admin can purge via Data Cleaner
+    }
+
+    // Call Rules (Jitsi Signaling — status-only, no WebRTC subcollections)
+    match /calls/{callId} {
+      // Allow get (single doc) for caller or receiver
+      allow get: if isAuthenticated() && (
+        resource.data.callerId == request.auth.uid || 
+        resource.data.receiverId == request.auth.uid || 
+        isAdmin()
+      );
+      // Allow list (query) — needed for the incoming call listener
+      // The query filters by receiverId == auth.uid, which satisfies the rule
+      allow list: if isAuthenticated();
+      allow create: if isAuthenticated() && request.resource.data.callerId == request.auth.uid;
+      allow update: if isAuthenticated() && (
+        resource.data.callerId == request.auth.uid || 
+        resource.data.receiverId == request.auth.uid || 
+        isAdmin()
+      );
+      allow delete: if isAdmin();
+
+      // Native WebRTC candidate exchange
+      match /offerCandidates/{candidateId} {
+        allow read, write: if isAuthenticated();
+      }
+      match /answerCandidates/{candidateId} {
+        allow read, write: if isAuthenticated();
+      }
+    }
+
+    // Feedback Rules
+    match /rideFeedbacks/{feedbackId} {
+      allow read: if isAdmin() || (isAuthenticated() && resource.data.riderId == request.auth.uid);
+      allow create: if isAuthenticated() && request.resource.data.riderId == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+  }
+}

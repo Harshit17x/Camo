@@ -1,0 +1,9 @@
+{
+  "name": "CaMo",
+  "description": "A production-ready ride-sharing platform with real-time tracking, Rider/Driver apps, and Mappls integration.",
+  "requestFramePermissions": [
+    "geolocation",
+    "camera",
+    "microphone"
+  ]
+}

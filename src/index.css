@@ -1,0 +1,193 @@
+/* CampusMobility Styles - Version 1.1.0 - Performance Build */
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap');
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+@theme {
+  --font-sans: "Rubik", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Rubik", sans-serif;
+  --font-sora: "Sora", sans-serif;
+  --font-dm: "DM Sans", sans-serif;
+}
+
+/* ── Performance: GPU layer promotion for animated elements ── */
+.will-animate {
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* ── Touch: eliminate 300ms tap delay on all interactive elements ── */
+button, a, [role="button"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Scrolling: native momentum scrolling on iOS ── */
+.overflow-y-auto, .overflow-x-auto, .no-scrollbar {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Fixed panels: use paint containment for perf ── */
+.fixed, [style*="position: fixed"] {
+  contain: layout style;
+}
+
+/* ── Keyframes used by SmartSlider at idle ── */
+@keyframes hapticPulse {
+  0%, 80%, 100% { transform: scale(1); }
+  85% { transform: scale(0.94); }
+  92% { transform: scale(1.05); }
+  96% { transform: scale(0.98); }
+}
+
+@keyframes dragVibrate {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-1.5deg); }
+  75% { transform: rotate(1.5deg); }
+}
+
+@keyframes confirmBurst {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.15); }
+  70% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+/* Shimmer: only runs on drag, slower idle = fewer repaints */
+@keyframes shimmer {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+/* Simple name fade-in (replaces CinematicScramble rAF loop) */
+@keyframes simpleFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* map-level pulse for user dot */
+@keyframes map-dot-pulse {
+  0%   { transform: scale(0.9) translateZ(0); }
+  50%  { transform: scale(1.1) translateZ(0); }
+  100% { transform: scale(0.9) translateZ(0); }
+}
+
+@keyframes blink-caret {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+@keyframes selectCard {
+  0%   { box-shadow: 0 0 0 0 rgba(74,222,128,0.7); border-color: rgba(74,222,128,0.3); }
+  40%  { box-shadow: 0 0 0 6px rgba(74,222,128,0.25); border-color: #4ADE80; }
+  100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); border-color: #4ADE80; }
+}
+
+@keyframes dotWave {
+  0%, 60%, 100% { transform: translateY(0) translateZ(0); opacity: 0.4; }
+  30%            { transform: translateY(-7px) translateZ(0) scale(1.15); opacity: 1; }
+}
+
+@keyframes radarRing {
+  0%   { transform: translateZ(0) scale(0.2); opacity: 0.8; }
+  50%  { opacity: 0.4; }
+  100% { transform: translateZ(0) scale(3.5); opacity: 0; }
+}
+
+@keyframes topGlow {
+  0%, 100% { border-top-color: rgba(245,158,11,0.20); }
+  50%       { border-top-color: rgba(245,158,11,0.55); }
+}
+
+@keyframes cancelPulse {
+  0%    { transform: translateY(-50%) scale(1); box-shadow: 0 4px 16px rgba(239,68,68,0.40); }
+  3.3%  { transform: translateY(-50%) scale(0.88); }
+  6.6%  { transform: translateY(-50%) scale(1.10); box-shadow: 0 4px 24px rgba(239,68,68,0.65); }
+  9.9%  { transform: translateY(-50%) scale(0.95); }
+  22%, 100% { transform: translateY(-50%) scale(1); box-shadow: 0 4px 16px rgba(239,68,68,0.40); }
+}
+
+@keyframes cancelShake {
+  0%, 100% { transform: translateY(-50%) rotate(0deg); }
+  20%       { transform: translateY(-53%) rotate(-3deg); }
+  40%       { transform: translateY(-47%) rotate(3deg); }
+  60%       { transform: translateY(-52%) rotate(-2deg); }
+  80%       { transform: translateY(-48%) rotate(2deg); }
+}
+
+@keyframes cancelConfirm {
+  0%   { transform: translateY(-50%) scale(1); }
+  40%  { transform: translateY(-50%) scale(1.12); }
+  70%  { transform: translateY(-50%) scale(0.96); }
+  100% { transform: translateY(-50%) scale(1); }
+}
+
+@keyframes pinShadow {
+  0%, 100% { transform: translateZ(0) scaleX(1); opacity: 0.4; }
+  50%       { transform: translateZ(0) scaleX(0.5); opacity: 0.15; }
+}
+
+@keyframes innerPing {
+  0%, 100% { transform: translateZ(0) scale(1); opacity: 0.4; }
+  50%       { transform: translateZ(0) scale(1.3); opacity: 0; }
+}
+
+@layer base {
+  html, body {
+    @apply font-sans;
+    /* Prevent rubber-band overscroll from triggering on the entire page */
+    overscroll-behavior: none;
+  }
+  body {
+    @apply bg-zinc-950 text-zinc-50 antialiased selection:bg-emerald-500/30;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    /* Reduced blur: 24px -> 12px. Visually identical on dark bg, 50% cheaper. */
+    @apply bg-zinc-900/80 backdrop-blur-xl border border-zinc-800 shadow-2xl;
+  }
+
+  .glass-panel-light {
+    @apply bg-white/80 backdrop-blur-xl border border-zinc-200 shadow-xl;
+  }
+  
+  .premium-button {
+    @apply relative overflow-hidden transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none;
+    touch-action: manipulation;
+  }
+  
+  .premium-button::after {
+    @apply content-[''] absolute inset-0 bg-white/5 opacity-0 transition-opacity;
+  }
+  
+  .premium-button:hover::after {
+    @apply opacity-100;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-zinc-800 rounded-full;
+  }
+  .custom-scrollbar.light::-webkit-scrollbar-thumb {
+    @apply bg-zinc-200;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-zinc-700;
+  }
+  .custom-scrollbar.light::-webkit-scrollbar-thumb:hover {
+    @apply bg-zinc-300;
+  }
+
+  /* No-scrollbar utility */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
