@@ -1585,22 +1585,19 @@ export default function RiderHome() {
                 >
                   <div className="w-12 h-[5px] bg-zinc-600 rounded-full" />
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <p className="text-[10px] text-[#22c55e] font-black uppercase tracking-[0.2em]">{t.welcome_back}</p>
-                    <h2 className="text-2xl font-black tracking-tight font-display text-white">
-                      <span className="block">Hi,</span>
-                      <span className="inline-block origin-left text-[115%] transition-all duration-300 ease-in-out">
-                        {profile?.displayName || 'Rider'}
-                      </span>
-                    </h2>
-                  </div>
+                <div className="flex items-center gap-4 mb-2">
                   <button
                     onClick={() => setShowBooking(false)}
-                    className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-zinc-400 hover:text-white transition-colors"
+                    className="w-10 h-10 shrink-0 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-300 hover:text-white hover:bg-white/10 transition-colors"
                   >
-                    <ChevronRight className="rotate-90" size={20} />
+                    <ChevronLeft size={20} />
                   </button>
+                  <div className="space-y-1">
+                    <p className="text-[10px] text-[#22c55e] font-black uppercase tracking-[0.2em]">{t.welcome_back}</p>
+                    <h2 className="text-2xl font-black tracking-tight font-display text-white line-clamp-1">
+                      Hi, {profile?.displayName || 'Rider'}
+                    </h2>
+                  </div>
                 </div>
 
                 <div className="flex items-center justify-between">
